@@ -26,6 +26,7 @@ class CPU:
         # Command lookup table
         self.command_table = {
             0b10100000: self.ADD,
+            0b10110000: self.ADDI,
             0b10101000: self.AND,
             0b01010000: self.CALL,
             0b10100111: self.CMP,
@@ -57,6 +58,7 @@ class CPU:
             0b10101101: self.SHR,
             0b10000100: self.ST,
             0b10100001: self.SUB,
+            0b01110001: self.SUBI,
             0b10101011: self.XOR,
         }
 
@@ -74,8 +76,12 @@ class CPU:
         # Standard operations
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
+        elif op == "ADDI":
+            self.reg[reg_a] += reg_b
         elif op == "SUB":
-            self.reg[reg_a] -= self.reg[reg_b]
+            self.reg[reg_a] -= self.reg[reg_b]            
+        elif op == "SUBI":
+            self.reg[reg_a] -= reg_b
         elif op == "MUL":
             self.reg[reg_a] *= self.reg[reg_b]
         elif op == "DIV":
@@ -310,10 +316,18 @@ class CPU:
     def ADD(self):
         # Add the values of two registers, store in reg A
         self.alu("ADD", self.ram_read(self.pc+1), self.ram_read(self.pc+2))
+    
+    def ADDI(self):
+        # Add an immediate value to a register
+        self.alu("ADDI", self.ram_read(self.pc+1), self.ram_read(self.pc+2))
 
     def SUB(self):
         # Subtract the value of reg A from reg B, store in reg A
         self.alu("SUB", self.ram_read(self.pc+1), self.ram_read(self.pc+2))
+    
+    def SUBI(self):
+        # Subtract an immediate value from a register
+        self.alu("SUBI", self.ram_read(self.pc+1), self.ram_read(self.pc+2))
 
     def MUL(self):
         # Multiply the values of two registers, store in reg A
